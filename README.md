@@ -29,4 +29,4 @@ This implements the 0-1 Knapsack solution using dynamic programming with O(n*W) 
 
 ## Live Demo
 
-[Add your GitHub Pages link here]
+https://ayasheta13.github.io/knapsack-visualizer/
