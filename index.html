@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knapsack Algorithm</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .setup-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .algorithm-section {
+            flex: 2;
+            min-width: 600px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .items-list {
+            margin-top: 20px;
+        }
+        
+        .item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .remove-btn {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .item-details {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .item-details .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .step-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .matrix-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .matrix {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .matrix th, .matrix td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            min-width: 50px;
+        }
+        
+        .matrix th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .matrix td {
+            background-color: white;
+        }
+        
+        .current-cell {
+            background-color: #3498db !important;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .selected-item {
+            background-color: #2ecc71 !important;
+            color: white;
+        }
+        
+        .solution {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f6ef;
+            border-radius: 6px;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .solution-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #27ae60;
+        }
+        
+        .solution-items {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .solution-items li {
+            padding: 8px 0;
+            border-bottom: 1px solid #d5f4e6;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .setup-section, .algorithm-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Knapsack Algorithm</h1>
+            <p class="description">
+                The knapsack problem is an optimization problem where you need to fill a knapsack with a limited capacity
+                with a set of items, each with a weight and value, with the goal of maximizing the total value without
+                exceeding the knapsack's capacity.
+            </p>
+        </header>
+        
+        <div class="content">
+            <section class="setup-section">
+                <h2 class="section-title">Data Setup</h2>
+                
+                <div class="form-group">
+                    <label for="capacity">Knapsack Capacity:</label>
+                    <input type="number" id="capacity" min="1" max="10" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label>Available Items:</label>
+                    <div class="items-list" id="items-list">
+                        <!-- Items will be added here dynamically -->
+                    </div>
+                    <button id="add-item">Add New Item</button>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn">Start Algorithm</button>
+                    <button id="reset-btn" disabled>Reset</button>
+                </div>
+            </section>
+            
+            <section class="algorithm-section">
+                <h2 class="section-title">Algorithm Execution</h2>
+                
+                <div class="step-info" id="step-info">
+                    <div class="step-title">Step 1: Setup</div>
+                    <p>Click the "Start Algorithm" button to begin executing the knapsack algorithm.</p>
+                </div>
+                
+                <div class="matrix-container">
+                    <table class="matrix" id="matrix">
+                        <!-- The table will be created here dynamically -->
+                    </table>
+                </div>
+                
+                <div class="solution hidden" id="solution">
+                    <div class="solution-title">Optimal Solution</div>
+                    <ul class="solution-items" id="solution-items">
+                        <!-- Selected items will be displayed here -->
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Default items
+            const defaultItems = [
+                { name: 'Item 1', value: 4, weight: 2 },
+                { name: 'Item 2', value: 3, weight: 1 },
+                { name: 'Item 3', value: 5, weight: 3 }
+            ];
+            
+            let items = [...defaultItems];
+            let currentStep = 0;
+            let matrix = [];
+            let selectedItems = [];
+            let isAlgorithmRunning = false;
+            
+            // DOM elements
+            const itemsList = document.getElementById('items-list');
+            const addItemBtn = document.getElementById('add-item');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const capacityInput = document.getElementById('capacity');
+            const stepInfo = document.getElementById('step-info');
+            const matrixTable = document.getElementById('matrix');
+            const solutionDiv = document.getElementById('solution');
+            const solutionItems = document.getElementById('solution-items');
+            
+            // Initialize default items
+            renderItems();
+            
+            // Add new item
+            addItemBtn.addEventListener('click', function() {
+                if (items.length >= 10) {
+                    alert('You can add up to 10 items maximum');
+                    return;
+                }
+                
+                items.push({
+                    name: `Item ${items.length + 1}`,
+                    value: 0,
+                    weight: 1
+                });
+                
+                renderItems();
+            });
+            
+            // Start algorithm
+            startBtn.addEventListener('click', function() {
+                if (items.length === 0) {
+                    alert('You must add at least one item');
+                    return;
+                }
+                
+                const capacity = parseInt(capacityInput.value);
+                if (isNaN(capacity) || capacity < 1 || capacity > 10) {
+                    alert('Knapsack capacity must be between 1 and 10');
+                    return;
+                }
+                
+                isAlgorithmRunning = true;
+                startBtn.disabled = true;
+                resetBtn.disabled = false;
+                currentStep = 0;
+                
+                // Execute knapsack algorithm
+                knapsackAlgorithm(capacity, items);
+                
+                // Show first step
+                showStep(0);
+            });
+            
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                isAlgorithmRunning = false;
+                startBtn.disabled = false;
+                resetBtn.disabled = true;
+                currentStep = 0;
+                
+                // Reset items to default
+                items = [...defaultItems];
+                renderItems();
+                
+                // Reset UI
+                stepInfo.innerHTML = `
+                    <div class="step-title">Step 1: Setup</div>
+                    <p>Click the "Start Algorithm" button to begin executing the knapsack algorithm.</p>
+                `;
+                
+                matrixTable.innerHTML = '';
+                solutionDiv.classList.add('hidden');
+            });
+            
+            // Display items
+            function renderItems() {
+                itemsList.innerHTML = '';
+                
+                items.forEach((item, index) => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'item';
+                    itemElement.innerHTML = `
+                        <div class="item-header">
+                            <span class="item-name">${item.name}</span>
+                            <button class="remove-btn" data-index="${index}">Remove</button>
+                        </div>
+                        <div class="item-details">
+                            <div class="form-group">
+                                <label>Value</label>
+                                <input type="number" class="item-value" data-index="${index}" 
+                                       min="0" max="50" value="${item.value}">
+                            </div>
+                            <div class="form-group">
+                                <label>Weight</label>
+                                <input type="number" class="item-weight" data-index="${index}" 
+                                       min="1" max="10" value="${item.weight}">
+                            </div>
+                        </div>
+                    `;
+                    
+                    itemsList.appendChild(itemElement);
+                });
+                
+                // Add event listeners to input fields
+                document.querySelectorAll('.item-value').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const index = parseInt(this.dataset.index);
+                        items[index].value = parseInt(this.value);
+                    });
+                });
+                
+                document.querySelectorAll('.item-weight').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const index = parseInt(this.dataset.index);
+                        items[index].weight = parseInt(this.value);
+                    });
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        items.splice(index, 1);
+                        renderItems();
+                    });
+                });
+            }
+            
+            // Knapsack algorithm
+            function knapsackAlgorithm(capacity, items) {
+                const n = items.length;
+                matrix = Array(n + 1).fill().map(() => Array(capacity + 1).fill(0));
+                
+                // Build the table
+                for (let i = 1; i <= n; i++) {
+                    for (let w = 1; w <= capacity; w++) {
+                        if (items[i-1].weight <= w) {
+                            matrix[i][w] = Math.max(
+                                matrix[i-1][w],
+                                items[i-1].value + matrix[i-1][w - items[i-1].weight]
+                            );
+                        } else {
+                            matrix[i][w] = matrix[i-1][w];
+                        }
+                    }
+                }
+                
+                // Extract selected items
+                selectedItems = [];
+                let w = capacity;
+                for (let i = n; i > 0; i--) {
+                    if (matrix[i][w] !== matrix[i-1][w]) {
+                        selectedItems.push(items[i-1]);
+                        w -= items[i-1].weight;
+                    }
+                }
+                
+                // Reverse the list to get the correct order
+                selectedItems.reverse();
+                
+                // Display the table
+                renderMatrix(capacity, items);
+            }
+            
+            // Display the table
+            function renderMatrix(capacity, items) {
+                matrixTable.innerHTML = '';
+                
+                // Create header
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = '<th>Items \\ Capacity</th>';
+                
+                for (let w = 0; w <= capacity; w++) {
+                    const th = document.createElement('th');
+                    th.textContent = w;
+                    headerRow.appendChild(th);
+                }
+                
+                matrixTable.appendChild(headerRow);
+                
+                // Create rows
+                for (let i = 0; i <= items.length; i++) {
+                    const row = document.createElement('tr');
+                    
+                    // Item name cell
+                    const itemCell = document.createElement('th');
+                    if (i === 0) {
+                        itemCell.textContent = 'None';
+                    } else {
+                        itemCell.textContent = items[i-1].name;
+                    }
+                    row.appendChild(itemCell);
+                    
+                    // Value cells
+                    for (let w = 0; w <= capacity; w++) {
+                        const cell = document.createElement('td');
+                        cell.textContent = matrix[i][w];
+                        cell.id = `cell-${i}-${w}`;
+                        row.appendChild(cell);
+                    }
+                    
+                    matrixTable.appendChild(row);
+                }
+            }
+            
+            // Display current step
+            function showStep(step) {
+                currentStep = step;
+                const n = items.length;
+                const capacity = parseInt(capacityInput.value);
+                
+                switch(step) {
+                    case 0:
+                        stepInfo.innerHTML = `
+                            <div class="step-title">Step 1: Initialize Table</div>
+                            <p>The table has been initialized with zero values. The first row represents having no items, and the first column represents zero capacity.</p>
+                        `;
+                        highlightCell(0, 0);
+                        break;
+                        
+                    case 1:
+                        stepInfo.innerHTML = `
+                            <div class="step-title">Step 2: Fill the Table</div>
+                            <p>We begin filling the table using dynamic programming. For each item and each capacity, we calculate the maximum possible value.</p>
+                        `;
+                        highlightCell(1, 1);
+                        break;
+                        
+                    case 2:
+                        // Show table filling progress
+                        let i = Math.floor((step - 1) / capacity) + 1;
+                        let w = ((step - 1) % capacity) + 1;
+                        
+                        if (i <= n && w <= capacity) {
+                            stepInfo.innerHTML = `
+                                <div class="step-title">Step ${step}: Calculate Value for Item ${i} and Capacity ${w}</div>
+                                <p>We calculate the maximum value achievable using items 1 to ${i} and capacity ${w}.</p>
+                            `;
+                            highlightCell(i, w);
+                        } else if (step === n * capacity + 2) {
+                            stepInfo.innerHTML = `
+                                <div class="step-title">Step ${step}: Table Complete</div>
+                                <p>The table has been completely filled. The value in the bottom-right corner (${matrix[n][capacity]}) represents the maximum possible value.</p>
+                            `;
+                            highlightCell(n, capacity);
+                        }
+                        break;
+                        
+                    case n * capacity + 3:
+                        stepInfo.innerHTML = `
+                            <div class="step-title">Step ${step}: Extract Selected Items</div>
+                            <p>We start from the bottom-right corner of the table and work backwards to determine the selected items.</p>
+                        `;
+                        highlightCell(n, capacity);
+                        break;
+                        
+                    case n * capacity + 4:
+                        stepInfo.innerHTML = `
+                            <div class="step-title">Step ${step}: Final Solution</div>
+                            <p>The selected items that give the maximum value without exceeding the knapsack capacity have been determined.</p>
+                        `;
+                        showSolution();
+                        break;
+                }
+                
+                // If we're not at the last step, move to the next step after one second
+                if (step < n * capacity + 4) {
+                    setTimeout(() => showStep(step + 1), 1000);
+                }
+            }
+            
+            // Highlight a specific cell
+            function highlightCell(i, w) {
+                // Remove highlighting from all cells
+                document.querySelectorAll('.matrix td, .matrix th').forEach(cell => {
+                    cell.classList.remove('current-cell');
+                });
+                
+                // Highlight the current cell
+                const cell = document.getElementById(`cell-${i}-${w}`);
+                if (cell) {
+                    cell.classList.add('current-cell');
+                }
+            }
+            
+            // Display the final solution
+            function showSolution() {
+                solutionDiv.classList.remove('hidden');
+                solutionItems.innerHTML = '';
+                
+                let totalValue = 0;
+                let totalWeight = 0;
+                
+                selectedItems.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.name}: Value = ${item.value}, Weight = ${item.weight}`;
+                    solutionItems.appendChild(li);
+                    
+                    totalValue += item.value;
+                    totalWeight += item.weight;
+                });
+                
+                const totalLi = document.createElement('li');
+                totalLi.innerHTML = `<strong>Total: Value = ${totalValue}, Weight = ${totalWeight}</strong>`;
+                solutionItems.appendChild(totalLi);
+                
+                // Highlight selected items in the table
+                document.querySelectorAll('.matrix th').forEach(cell => {
+                    if (selectedItems.some(item => cell.textContent === item.name)) {
+                        cell.classList.add('selected-item');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
